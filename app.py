@@ -29,19 +29,22 @@ input_dict = {
 # Convert input to DataFrame
 input_df = pd.DataFrame([input_dict])
 
-# Make predictions
-predictions_df = predict_model(estimator=model, data=input_df)
 
-# Display the predictions DataFrame to debug
-st.write("Predictions DataFrame:", predictions_df)
+# Add a button to make predictions
+if st.button('Predict'):
+    # Make predictions
+    predictions_df = predict_model(estimator=model, data=input_df)
 
-# Extract the prediction value
-prediction_column = 'Label' if 'Label' in predictions_df.columns else predictions_df.columns[-1]
-pred = predictions_df.iloc[0][prediction_column]
+    # Display the predictions DataFrame to debug
+    st.write("Predictions DataFrame:", predictions_df)
 
-# Ensure 'pred' is a float
-try:
-    pred = float(pred)
-    st.write(f'Predicted Insurance Charges: ${pred:.2f}')
-except ValueError:
-    st.write(f'Error: Unable to convert prediction to a float. Received: {pred}')
+    # Extract the prediction value
+    prediction_column = 'Label' if 'Label' in predictions_df.columns else predictions_df.columns[-1]
+    pred = predictions_df.iloc[0][prediction_column]
+
+    # Ensure 'pred' is a float
+    try:
+        pred = float(pred)
+        st.write(f'Predicted Insurance Charges: ${pred:.2f}')
+    except ValueError:
+        st.write(f'Error: Unable to convert prediction to a float. Received: {pred}')
