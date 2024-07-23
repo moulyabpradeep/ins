@@ -2,17 +2,36 @@ from pycaret.regression import load_model, predict_model
 import streamlit as st
 import pandas as pd
 
-model=load_model('insurance_dt_model')
+# Load the trained model
+model = load_model('insurance_dt_model')
 
-input_dict = {'age':20, 'sex': 'female', 'bmi':20, 'children':2, 'smoker':'no','region':'southwest'}
+# Streamlit app title
+st.title('Insurance Charges Prediction')
 
- 
+# Input fields
+age = st.number_input('Age', min_value=0, max_value=120, value=20)
+sex = st.selectbox('Sex', options=['male', 'female'])
+bmi = st.number_input('BMI', min_value=0.0, max_value=100.0, value=20.0)
+children = st.number_input('Children', min_value=0, max_value=10, value=2)
+smoker = st.selectbox('Smoker', options=['yes', 'no'])
+region = st.selectbox('Region', options=['northeast', 'southeast', 'southwest', 'northwest'])
+
+# Create input dictionary
+input_dict = {
+    'age': age,
+    'sex': sex,
+    'bmi': bmi,
+    'children': children,
+    'smoker': smoker,
+    'region': region
+}
+
+# Convert input to DataFrame
 input_df = pd.DataFrame([input_dict])
- 
-predictions_df = predict_model(estimator=model, data=input_df)
-print(predictions_df)
-print(predictions_df['prediction_label'])
-pred=predictions_df.iloc[0]['prediction_label']
-print(pred)
 
-st.markdown(pred)
+# Make predictions
+predictions_df = predict_model(estimator=model, data=input_df)
+pred = predictions_df.iloc[0]['Label']
+
+# Display the prediction
+st.write(f'Predicted Insurance Charges: ${pred:.2f}')
