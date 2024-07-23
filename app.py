@@ -29,15 +29,19 @@ input_dict = {
 # Convert input to DataFrame
 input_df = pd.DataFrame([input_dict])
 
-
 # Make predictions
 predictions_df = predict_model(estimator=model, data=input_df)
 
-# Debugging: Print the predictions DataFrame to find the correct column name
-st.write(predictions_df)
+# Display the predictions DataFrame to debug
+st.write("Predictions DataFrame:", predictions_df)
 
-# Assuming the correct column name is 'Label', update this if needed
-pred = predictions_df.iloc[0].get('Label', 'Column not found')
+# Extract the prediction value
+prediction_column = 'Label' if 'Label' in predictions_df.columns else predictions_df.columns[-1]
+pred = predictions_df.iloc[0][prediction_column]
 
-# Display the prediction
-st.write(f'Predicted Insurance Charges: ${pred:.2f}')
+# Ensure 'pred' is a float
+try:
+    pred = float(pred)
+    st.write(f'Predicted Insurance Charges: ${pred:.2f}')
+except ValueError:
+    st.write(f'Error: Unable to convert prediction to a float. Received: {pred}')
